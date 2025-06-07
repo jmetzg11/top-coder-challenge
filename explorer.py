@@ -23,6 +23,7 @@ for i, row in df.iterrows():
     result = calculate_reimbursement(days, miles, receipts)
 
     relative_error = abs(result - expected_output) / expected_output * 100
+    cents = int(round(receipts * 100)) % 100
     real_error = result - expected_output
     errors[relative_error] = (days, miles, receipts, round(expected_output, 2), round(result, 2), round(real_error, 2))
 

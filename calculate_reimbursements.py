@@ -48,46 +48,43 @@ def cal_base_reimbursement_49_99(days, miles):
 
     return daily_allowance + mile_amount
 
-
 def cal_receipt_scaling(days, receipts):
     """Receipt-based scaling - increased factors"""
     per_day = receipts / days
 
-    # Higher scaling factors to make receipts more dominant
     if days == 1:
         if receipts > 1500:
-            return 0.25  # Increased from 0.15
+            return 0.25
         elif receipts > 500:
-            return 0.40  # Increased from 0.25
+            return 0.40
         else:
-            return 0.55  # Increased from 0.35
+            return 0.55
     elif days <= 3:
         if per_day > 400:
-            return 0.35  # Increased from 0.20
+            return 0.35
         else:
-            return 0.50  # Increased from 0.30
+            return 0.50
     elif days <= 7:
         if per_day > 200:
-            return 0.30  # Increased from 0.15
+            return 0.30
         else:
-            return 0.45  # Increased from 0.25
-    else:  # Long trips
-        return 0.40  # Increased from 0.20
+            return 0.45
+    else:
+        return 0.40
 
 
-def cal_efficiency_multiplier(days, miles, receipts):
+def cal_efficiency_multiplier(days, miles):
     """Efficiency as a multiplier rather than addition"""
     miles_per_day = miles / days
 
-    # Base multiplier
     if 150 <= miles_per_day <= 250:
-        multiplier = 1.2  # 20% bonus
+        multiplier = 1.2
     elif 100 <= miles_per_day < 150 or 250 < miles_per_day <= 350:
-        multiplier = 1.05  # 5% bonus
+        multiplier = 1.05
     elif miles_per_day >= 350:
-        multiplier = 1.15  # High mileage bonus
+        multiplier = 1.15
     else:
-        multiplier = 0.9   # Small penalty for very low efficiency
+        multiplier = 0.9
 
     return multiplier
 
@@ -102,15 +99,17 @@ def calculate_reimbursement(days, miles, receipts):
     cents = int(round(receipts * 100)) % 100
     if cents in [49, 99]:
         base = cal_base_reimbursement_49_99(days, miles)
-        penalty = receipts * .42
-        reimbursement = base - penalty
+        bonus = 55.00
+        penalty_factor = 0.061
+        receipt_adjustment = bonus - (receipts * penalty_factor)
+        reimbursement = base + receipt_adjustment
         return max(0, round(reimbursement, 2))
 
     base = cal_base_reimbursement(days, miles)
 
 
     receipt_factor = cal_receipt_scaling(days, receipts)
-    efficiency_mult = cal_efficiency_multiplier(days, miles, receipts)
+    efficiency_mult = cal_efficiency_multiplier(days, miles)
     reimbursement = base + (receipts * receipt_factor * efficiency_mult)
 
     return max(0, round(reimbursement, 2))
