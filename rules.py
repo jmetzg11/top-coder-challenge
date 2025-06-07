@@ -1,23 +1,27 @@
 def cal_base_reimbursement(days, miles):
-    """Base calculation: focus on per-day allowance + mileage"""
-    # Start with a base per-day allowance
-    daily_allowance = days * 85  # Base daily rate
-
-    # Simple mileage calculation - less complex tiers
-    if miles <= 200:
-        mile_amount = miles * 0.45
-    elif miles <= 600:
-        mile_amount = 200 * 0.45 + (miles - 200) * 0.38
-    else:
-        mile_amount = 200 * 0.45 + 400 * 0.38 + (miles - 600) * 0.42
-
-    # Much gentler trip adjustments
+    """Base calculation with more nuanced mileage tiers"""
+    # Base daily allowance - higher for optimal trip lengths
     if days == 5:
-        daily_allowance += 25
+        daily_allowance = days * 95  # Kevin's "sweet spot"
     elif days in [4, 6]:
-        daily_allowance += 15
-    elif days >= 12:  # Only penalize very long trips slightly
-        daily_allowance -= (days - 11) * 8
+        daily_allowance = days * 90
+    elif days in [1, 2, 3]:
+        daily_allowance = days * 85
+    elif days <= 8:
+        daily_allowance = days * 88
+    else:
+        # Penalty for very long trips gets stronger
+        daily_allowance = days * 80 - (days - 8) * 5
+
+    # More sophisticated mileage calculation
+    if miles <= 100:
+        mile_amount = miles * 0.50  # Higher rate for short distances
+    elif miles <= 300:
+        mile_amount = 100 * 0.50 + (miles - 100) * 0.45
+    elif miles <= 600:
+        mile_amount = 100 * 0.50 + 200 * 0.45 + (miles - 300) * 0.40
+    else:
+        mile_amount = 100 * 0.50 + 200 * 0.45 + 300 * 0.40 + (miles - 600) * 0.42
 
     return daily_allowance + mile_amount
 
@@ -46,6 +50,7 @@ def cal_receipt_scaling(days, receipts):
     else:  # Long trips
         return 0.40  # Increased from 0.20
 
+
 def cal_efficiency_multiplier(days, miles, receipts):
     """Efficiency as a multiplier rather than addition"""
     miles_per_day = miles / days
@@ -61,3 +66,4 @@ def cal_efficiency_multiplier(days, miles, receipts):
         multiplier = 0.9   # Small penalty for very low efficiency
 
     return multiplier
+

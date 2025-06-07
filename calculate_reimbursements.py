@@ -7,8 +7,7 @@ def calculate_reimbursement(days, miles, receipts):
     receipt_factor = cal_receipt_scaling(days, receipts)
     efficiency_mult = cal_efficiency_multiplier(days, miles, receipts)
 
-    # Try: base + (receipts * receipt_factor * efficiency_mult)
-    return base + (receipts * receipt_factor * efficiency_mult)
+    return base + (receipts * receipt_factor * efficiency_mult )
 
 
 
