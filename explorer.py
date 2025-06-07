@@ -30,6 +30,7 @@ sorted_errors = sorted(errors.items(), reverse=True)
 total_error = sum(error for error, _ in sorted_errors)
 
 with open('error_analysis.txt', 'w') as f:
+    f.write("Error%   Diff  Days Miles Receipts Expected  Actual\n")
     for error, (days, miles, receipts, expected, actual, real_err) in sorted_errors:
        direction = "+" if real_err > 0 else "-"
        f.write(f"{error:5.1f}% {direction}{abs(real_err):6.0f} {int(days):4d} {int(miles):5d} {receipts:8.2f} {expected:8.2f} {actual:7.2f}\n")

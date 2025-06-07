@@ -30,24 +30,46 @@ def cal_trip_bonus(trip_duration_days):
 def cal_receipts(days, receipts):
     per_day = receipts / days
 
+    # Special handling for 1-day trips - much more conservative
     if days == 1:
-        if receipts > 1500:
-            return receipts * 0.4
-        return receipts * 0.6
+        if receipts > 2000:
+            return receipts * 0.25
+        elif receipts > 1000:
+            return receipts * 0.35
+        else:
+            return receipts * 0.45
+
+    # More generous for 2-3 day trips
     elif days <= 3:
+        if per_day > 800:
+            return receipts * 0.25
+        elif per_day > 400:
+            return receipts * 0.35
+        else:
+            return receipts * 0.50
+
+    # Fix 4-day trips - they shouldn't be penalized so much
+    elif days == 4:
         if per_day > 600:
-            return receipts * 0.2
-        return receipts * 0.4
-    elif days == 4:  # Special handling for 4-day trips
-        if per_day > 500:
-            return receipts * 0.05  # Very heavy penalty for excessive 4-day spending
-        return receipts * 0.25
+            return receipts * 0.20
+        elif per_day > 300:
+            return receipts * 0.30
+        else:
+            return receipts * 0.40
+
+    # 5-6 day trips
     elif days <= 6:
         if per_day > 400:
-            return receipts * 0.15
-        return receipts * 0.25
+            return receipts * 0.20
+        else:
+            return receipts * 0.30
+
+    # Long trips - slightly more generous
     else:
-        return receipts * 0.2
+        if per_day > 300:
+            return receipts * 0.15
+        else:
+            return receipts * 0.25
 
 
 def cal_interactions(days, miles, receipts):

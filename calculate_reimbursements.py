@@ -14,7 +14,11 @@ def calculate_reimbursement(trip_duration_days, miles_traveled, total_receipts_a
 
     interactions_amount = cal_interactions(trip_duration_days, miles_traveled, total_receipts_amount)
 
-    return amount + miles_amount + efficiency_amount + trip_bonus + receipts_amount + interactions_amount
+    return round(amount + miles_amount + efficiency_amount + trip_bonus + receipts_amount + interactions_amount, 2)
+
+
+
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
