@@ -51,6 +51,8 @@ def cal_receipt_scaling(days, receipts):
         return 0.40  # Increased from 0.20
 
 
+
+
 def cal_efficiency_multiplier(days, miles, receipts):
     """Efficiency as a multiplier rather than addition"""
     miles_per_day = miles / days
@@ -66,4 +68,6 @@ def cal_efficiency_multiplier(days, miles, receipts):
         multiplier = 0.9   # Small penalty for very low efficiency
 
     return multiplier
+
+
 
