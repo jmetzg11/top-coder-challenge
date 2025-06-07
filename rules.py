@@ -8,22 +8,22 @@ def cal_miles(miles):
     else:
         return (100 * 0.58) + (200 * 0.45) + (300 * 0.40) + ((miles - 600) * 0.48)
 
-def cal_efficiency(days, miles):
+def cal_efficiency_bonus(days, miles):
     miles_per_day = miles / days
     if 180 <= miles_per_day <= 220:
-        return 30
+        return 30 * days
     elif 150 <= miles_per_day < 180 or 220 < miles_per_day <= 250:
-        return 10
+        return 10 * days
     else:
-        return -10
+        return -10 * days
 
-def cal_trip_bonus(trip_duration_days):
-    if trip_duration_days == 5:
-        return 50  # Keep the sweet spot
-    elif 4 <= trip_duration_days <= 6:
-        return 25  # Keep moderate bonus for 4-6 days
-    elif trip_duration_days >= 8:
-        return -(trip_duration_days - 7) * 15  # PENALTY for long trips
+def cal_trip_bonus(days):
+    if days == 5:
+        return 50
+    elif 4 <= days <= 6:
+        return 25 * days
+    elif days >= 8:
+        return -(days - 7) * 15
     else:
         return 0
 
@@ -99,5 +99,7 @@ def cal_interactions(days, miles, receipts):
         bonus += (miles - 800) * 0.1  # Additional bonus for very high mileage
 
     return bonus
+
+
 
 

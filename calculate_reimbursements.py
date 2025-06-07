@@ -6,7 +6,7 @@ def calculate_reimbursement(trip_duration_days, miles_traveled, total_receipts_a
 
     miles_amount = cal_miles(miles_traveled)
 
-    efficiency_amount = cal_efficiency(trip_duration_days, miles_traveled)
+    efficiency_amount = cal_efficiency_bonus(trip_duration_days, miles_traveled)
 
     trip_bonus = cal_trip_bonus(trip_duration_days)
 
