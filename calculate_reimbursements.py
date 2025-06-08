@@ -28,31 +28,6 @@ def calculate_reimbursement(days, miles, receipts):
     return max(0, round(reimbursement, 2))
 
 
-
-
-
-def cal_base_reimbursement_49_99(days, miles):
-    if days == 1:
-        daily_allowance = days * 75
-    elif days in [2, 3]:
-        daily_allowance = days * 82
-    elif days in [4, 5, 6]:
-        daily_allowance = days * 88
-    elif days <= 10:
-        daily_allowance = days * 85
-    else:
-        daily_allowance = days * 78
-
-    if miles <= 200:
-        mile_amount = miles * 0.35
-    elif miles <= 500:
-        mile_amount = 200 * 0.35 + (miles - 200) * 0.38
-    else:
-        mile_amount = 200 * 0.35 + 300 * 0.38 + (miles - 500) * 0.42
-
-    return daily_allowance + mile_amount
-
-
 if __name__ == "__main__":
     if len(sys.argv) != 4:
         print("Usage: python3 main.py <trip_duration_days> <miles_traveled> <total_receipts_amount>")
