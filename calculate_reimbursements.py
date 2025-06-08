@@ -1,5 +1,5 @@
 import sys
-from rules import cal_base_reimbursement, cal_base_reimbursement_49_99, cal_receipt_scaling, cal_efficiency_multiplier
+from rules import cal_base_reimbursement, cal_receipt_scaling, cal_efficiency_multiplier
 
 
 def calculate_reimbursement(days, miles, receipts):
@@ -8,9 +8,6 @@ def calculate_reimbursement(days, miles, receipts):
     if days == 0:
         return 0.0
 
-    miles_per_day = miles / days
-
-    # strangeness #1
     cents = int(round(receipts * 100)) % 100
     if cents in [49, 99]:
         base = cal_base_reimbursement_49_99(days, miles)
@@ -23,16 +20,37 @@ def calculate_reimbursement(days, miles, receipts):
     base = cal_base_reimbursement(days, miles)
 
 
-    receipt_factor = cal_receipt_scaling(days, receipts)
+    receipt_factor = cal_receipt_scaling(days, miles, receipts)
     efficiency_mult = cal_efficiency_multiplier(days, miles)
     reimbursement = base + (receipts * receipt_factor * efficiency_mult)
 
-    if days == 1 and miles > 450:
-        reimbursement *= 1.30
 
     return max(0, round(reimbursement, 2))
 
 
+
+
+
+def cal_base_reimbursement_49_99(days, miles):
+    if days == 1:
+        daily_allowance = days * 75
+    elif days in [2, 3]:
+        daily_allowance = days * 82
+    elif days in [4, 5, 6]:
+        daily_allowance = days * 88
+    elif days <= 10:
+        daily_allowance = days * 85
+    else:
+        daily_allowance = days * 78
+
+    if miles <= 200:
+        mile_amount = miles * 0.35
+    elif miles <= 500:
+        mile_amount = 200 * 0.35 + (miles - 200) * 0.38
+    else:
+        mile_amount = 200 * 0.35 + 300 * 0.38 + (miles - 500) * 0.42
+
+    return daily_allowance + mile_amount
 
 
 if __name__ == "__main__":

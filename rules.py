@@ -43,42 +43,56 @@ def cal_base_reimbursement_49_99(days, miles):
 
     return daily_allowance + mile_amount
 
-def cal_receipt_scaling(days, receipts):
-    """Receipt-based scaling - increased factors"""
-    per_day = receipts / days
 
+def cal_receipt_scaling(days, miles, receipts):
+    """Improved receipt scaling that considers both days and mileage context"""
+    per_day = receipts / days
+    miles_per_day = miles / days
+
+    # Base receipt factor
     if days == 1:
-        if receipts > 1500:
-            return 0.25
-        elif receipts > 500:
-            return 0.40
+        if receipts <= 100:
+            base_factor = 0.75
+        elif receipts <= 300:
+            base_factor = 0.65
+        elif receipts <= 500:
+            base_factor = 0.55
+        elif receipts <= 1000:
+            base_factor = 0.50  # Increased from 0.45
         else:
-            return 0.55
-    elif days <= 3:
-        if per_day > 400:
-            return 0.35
-        else:
-            return 0.50
-    elif days <= 7:
-        if per_day > 200:
-            return 0.30
-        else:
-            return 0.45
+            base_factor = 0.55  # Increased from 0.35 - key fix for high receipts
     else:
-        return 0.40
+        # Multi-day logic (keep existing)
+        if days <= 3:
+            base_factor = 0.35 if per_day > 400 else 0.50
+        elif days <= 7:
+            base_factor = 0.30 if per_day > 200 else 0.45
+        else:
+            base_factor = 0.40
+
+    # Adjust factor based on miles context for single-day trips
+    if days == 1:
+        # For very low mileage with high receipts, boost the factor
+        if miles_per_day < 50 and receipts > 800:
+            base_factor = min(0.85, base_factor + 0.30)  # Major boost for taxi/hotel cases
+        # For high mileage with low receipts, slight reduction
+        elif miles_per_day > 350 and receipts < 400:
+            base_factor = max(0.45, base_factor - 0.10)
+
+    return base_factor
+
+
 
 
 def cal_efficiency_multiplier(days, miles):
-    """Efficiency as a multiplier rather than addition"""
     miles_per_day = miles / days
-
     if 150 <= miles_per_day <= 250:
-        multiplier = 1.2
+        multiplier = 1.10
     elif 100 <= miles_per_day < 150 or 250 < miles_per_day <= 350:
-        multiplier = 1.05
+        multiplier = 1.02
     elif miles_per_day >= 350:
-        multiplier = 1.15
+        multiplier = 1.05
     else:
-        multiplier = 0.9
+        multiplier = 0.95
 
     return multiplier
