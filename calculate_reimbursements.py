@@ -1,5 +1,5 @@
 import sys
-from rules import cal_base_reimbursement, cal_receipt_scaling, cal_efficiency_multiplier
+from rules import cal_base_reimbursement, cal_base_reimbursement_49_99, cal_receipt_scaling, cal_efficiency_multiplier
 
 
 def calculate_reimbursement(days, miles, receipts):

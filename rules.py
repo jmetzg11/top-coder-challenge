@@ -49,7 +49,6 @@ def cal_receipt_scaling(days, miles, receipts):
     per_day = receipts / days
     miles_per_day = miles / days
 
-    # Base receipt factor
     if days == 1:
         if receipts <= 100:
             base_factor = 0.75
@@ -58,11 +57,10 @@ def cal_receipt_scaling(days, miles, receipts):
         elif receipts <= 500:
             base_factor = 0.55
         elif receipts <= 1000:
-            base_factor = 0.50  # Increased from 0.45
+            base_factor = 0.50
         else:
-            base_factor = 0.55  # Increased from 0.35 - key fix for high receipts
+            base_factor = 0.55
     else:
-        # Multi-day logic (keep existing)
         if days <= 3:
             base_factor = 0.35 if per_day > 400 else 0.50
         elif days <= 7:
@@ -70,12 +68,9 @@ def cal_receipt_scaling(days, miles, receipts):
         else:
             base_factor = 0.40
 
-    # Adjust factor based on miles context for single-day trips
     if days == 1:
-        # For very low mileage with high receipts, boost the factor
         if miles_per_day < 50 and receipts > 800:
-            base_factor = min(0.85, base_factor + 0.30)  # Major boost for taxi/hotel cases
-        # For high mileage with low receipts, slight reduction
+            base_factor = min(0.85, base_factor + 0.30)
         elif miles_per_day > 350 and receipts < 400:
             base_factor = max(0.45, base_factor - 0.10)
 
